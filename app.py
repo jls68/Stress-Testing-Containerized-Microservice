@@ -13,8 +13,8 @@ def isPrime(number):
         storage.lrem('primeList', 0, number)
         # Add prime number to the head of the list the redis object
         storage.lpush('primeList', number)
-        return '%d is prime.\n' % number
-    return '%d is not prime.\n' % number
+        return '%d is prime\n' % number
+    return '%d is not prime\n' % number
 
 # Return true if x is prime or false if not
 def check_if_prime(x):
@@ -36,6 +36,11 @@ def primesStored():
     list = storage.lrange('primeList', 0, -1)
     for num in list:
             primes += str(int(num)) + " "
-    return primes
+    return primes + '\n'
   
+# Extra url to clear old prime numbers
+@app.route('/clear')
+def clearStored():
+    storage.ltrim('primeList', 1, 0)
+    return "Cleared stored prime numbers\n"
 
