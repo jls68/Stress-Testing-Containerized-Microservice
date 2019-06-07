@@ -10,6 +10,7 @@ storage = redis.Redis(host='redis', port=6379)
 @app.route('/isPrime/<int:number>')
 def isPrime(number):
     if (check_if_prime(number)):
+	# Remove number if in list so no duplictae is made
         storage.lrem('primeList', 0, number)
         # Add prime number to the head of the list the redis object
         storage.lpush('primeList', number)
@@ -43,4 +44,17 @@ def primesStored():
 def clearStored():
     storage.ltrim('primeList', 1, 0)
     return "Cleared stored prime numbers\n"
+
+# Extra url to check all numbers up to given are prime
+@app.route('/isPrimeUpTo/<limit>')
+def primeUpTo(limit):
+	for x in range(int(limit)):
+		if(check_if_prime(x)):
+			# Remove number if in list so no duplictae is made
+			storage.lrem('primeList', 0, x)
+			# Add prime number to the head of the list the redis object
+			storage.lpush('primeList', x)
+	return "Done\n"
+			
+
 
